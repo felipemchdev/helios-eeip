@@ -298,7 +298,7 @@ docker compose up --build -d
 
 ### Phase 2 â€” Data Enrichment
 - [ ] OSV.dev API integration for full CVSS vectors and exploit availability
-- [ ] Weighted risk score: severity Ã— depth in dependency graph Ã— exploitability
+- [ ] Weighted risk score: severity Ã- depth in dependency graph Ã- exploitability
 - [ ] dbt incremental models for silver and gold layers
 - [ ] Historical snapshot tracking
 
