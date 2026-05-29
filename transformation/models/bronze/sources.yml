@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: bronze_deps_dev
+    schema: main
+    tables:
+      - name: raw_deps_dev
+        description: "Raw deps.dev package + dependency JSON payloads"
+        meta:
+          external_location: "az://bronze/raw/deps_dev/*/*.json"
+
+  - name: bronze_advisories
+    schema: main
+    tables:
+      - name: raw_advisories
+        description: "Advisory metadata JSONs from deps.dev /advisories endpoint"
+        meta:
+          external_location: "az://bronze/raw/advisories/*/*.json"

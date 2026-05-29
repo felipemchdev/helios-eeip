@@ -1,0 +1,48 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.vscode/
+.idea/
+
+# Azure Functions
+.azure/
+*.funcignore
+local.settings.json
+ingestion/.python_packages/
+
+# dbt
+dbt_packages/
+logs/
+dbt.log
+
+# DuckDB database files
+*.duckdb
+*.duckdb.wal
+
+# Build / distribution
+*.egg-info/
+dist/
+build/
+
+# Docker / Container App exports
+*.yaml
+!docker-compose.yml
+!airflow-config.yaml
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jupyter / notebooks
+.ipynb_checkpoints/
+*.ipynb

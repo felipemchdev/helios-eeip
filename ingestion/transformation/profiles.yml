@@ -1,0 +1,10 @@
+eeip_duckdb:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: /tmp/eeip.duckdb
+      extensions:
+        - azure
+      settings:
+        azure_storage_connection_string: "{{ env_var('ADLS_CONNECTION_STRING') }}"

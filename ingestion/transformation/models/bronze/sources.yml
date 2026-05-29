@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: "Raw JSON files from deps.dev ingestion"
+    tables:
+      - name: deps_dev_raw
+        description: "Raw deps.dev package + dependency data"
+        meta:
+          path: "az://bronze/raw/deps_dev/*/*.json"

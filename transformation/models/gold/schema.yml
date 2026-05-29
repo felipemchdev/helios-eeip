@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fct_dependency_risk
+    description: "Risk assessment per package based on advisory exposure"
+    columns:
+      - name: root_package
+        tests: [not_null, unique]
+
+      - name: risk_level
+        tests:
+          - accepted_values:
+              values: ['HIGH', 'MEDIUM', 'LOW']
+
+      - name: risk_density
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+
+      - name: total_dep_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true

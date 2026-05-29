@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: stg_packages
+    description: "Staging - packages normalized"
+  - name: stg_dependencies
+    description: "Staging - dependencies normalized"

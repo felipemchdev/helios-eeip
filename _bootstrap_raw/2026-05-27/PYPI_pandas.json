@@ -1,0 +1,181 @@
+﻿{
+    "versionKey":  {
+                       "system":  "PYPI",
+                       "name":  "pandas",
+                       "version":  "2.1.4"
+                   },
+    "purl":  "pkg:pypi/pandas@2.1.4",
+    "publishedAt":  "2023-12-08T15:38:20Z",
+    "isDefault":  false,
+    "isDeprecated":  false,
+    "deprecatedReason":  "",
+    "licenses":  [
+                     "non-standard"
+                 ],
+    "licenseDetails":  [
+                           {
+                               "license":  "BSD 3-Clause License  Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team All rights reserved.  Copyright (c) 2011-2023, Open source contributors.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.  * Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+                               "spdx":  "non-standard"
+                           }
+                       ],
+    "advisoryKeys":  [
+
+                     ],
+    "links":  [
+                  {
+                      "label":  "HOMEPAGE",
+                      "url":  "https://pandas.pydata.org"
+                  },
+                  {
+                      "label":  "DOCUMENTATION",
+                      "url":  "https://pandas.pydata.org/docs/"
+                  },
+                  {
+                      "label":  "SOURCE_REPO",
+                      "url":  "https://github.com/pandas-dev/pandas"
+                  }
+              ],
+    "slsaProvenances":  [
+
+                        ],
+    "attestations":  [
+
+                     ],
+    "registries":  [
+                       "https://pypi.org/simple"
+                   ],
+    "relatedProjects":  [
+                            {
+                                "projectKey":  {
+                                                   "id":  "github.com/pandas-dev/pandas"
+                                               },
+                                "relationProvenance":  "UNVERIFIED_METADATA",
+                                "relationType":  "SOURCE_REPO"
+                            }
+                        ],
+    "upstreamIdentifiers":  [
+                                {
+                                    "packageName":  "pandas",
+                                    "versionString":  "2.1.4",
+                                    "source":  "PYPI_RELEASE_FILENAME"
+                                },
+                                {
+                                    "packageName":  "pandas",
+                                    "versionString":  "2.1.4",
+                                    "source":  "PYPI_METADATA_FILE"
+                                }
+                            ],
+    "cooldown":  {
+                     "end":  "2023-12-13T15:38:20Z",
+                     "description":  ""
+                 },
+    "projectStatus":  {
+                          "status":  "active",
+                          "reason":  ""
+                      },
+    "dependencies":  {
+                         "nodes":  [
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "pandas",
+                                                              "version":  "2.1.4"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "SELF",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "numpy",
+                                                              "version":  "1.26.4"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "python-dateutil",
+                                                              "version":  "2.9.0.post0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "pytz",
+                                                              "version":  "2026.2.0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "six",
+                                                              "version":  "1.17.0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "INDIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "tzdata",
+                                                              "version":  "2026.2.0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       }
+                                   ],
+                         "edges":  [
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  1,
+                                           "requirement":  "\u003c2,\u003e=1.22.4"
+                                       },
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  2,
+                                           "requirement":  "\u003e=2.8.2"
+                                       },
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  3,
+                                           "requirement":  "\u003e=2020.1"
+                                       },
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  5,
+                                           "requirement":  "\u003e=2022.1"
+                                       },
+                                       {
+                                           "fromNode":  2,
+                                           "toNode":  4,
+                                           "requirement":  "\u003e=1.5"
+                                       }
+                                   ],
+                         "error":  ""
+                     },
+    "ingested_at":  "2026-05-27T07:16:40.4090439Z"
+}

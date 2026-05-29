@@ -1,0 +1,18 @@
+name: eeip
+version: "1.0.0"
+config-version: 2
+
+profile: eeip_duckdb
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+
+models:
+  eeip:
+    silver:
+      +materialized: table
+      +schema: silver
+    gold:
+      +materialized: table
+      +schema: gold

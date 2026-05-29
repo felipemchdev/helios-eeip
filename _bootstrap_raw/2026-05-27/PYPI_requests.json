@@ -1,0 +1,168 @@
+﻿{
+    "versionKey":  {
+                       "system":  "PYPI",
+                       "name":  "requests",
+                       "version":  "2.31.0"
+                   },
+    "purl":  "pkg:pypi/requests@2.31.0",
+    "publishedAt":  "2023-05-22T15:12:42Z",
+    "isDefault":  false,
+    "isDeprecated":  false,
+    "deprecatedReason":  "",
+    "licenses":  [
+                     "Apache-2.0"
+                 ],
+    "licenseDetails":  [
+                           {
+                               "license":  "Apache 2.0",
+                               "spdx":  "Apache-2.0"
+                           }
+                       ],
+    "advisoryKeys":  [
+                         {
+                             "id":  "GHSA-9hjg-9r4m-mvj7"
+                         },
+                         {
+                             "id":  "GHSA-9wx4-h78v-vm56"
+                         },
+                         {
+                             "id":  "GHSA-gc5v-m9x4-r6x2"
+                         }
+                     ],
+    "links":  [
+                  {
+                      "label":  "DOCUMENTATION",
+                      "url":  "https://requests.readthedocs.io"
+                  },
+                  {
+                      "label":  "SOURCE_REPO",
+                      "url":  "https://github.com/psf/requests"
+                  }
+              ],
+    "slsaProvenances":  [
+
+                        ],
+    "attestations":  [
+
+                     ],
+    "registries":  [
+                       "https://pypi.org/simple"
+                   ],
+    "relatedProjects":  [
+                            {
+                                "projectKey":  {
+                                                   "id":  "github.com/psf/requests"
+                                               },
+                                "relationProvenance":  "UNVERIFIED_METADATA",
+                                "relationType":  "SOURCE_REPO"
+                            }
+                        ],
+    "upstreamIdentifiers":  [
+                                {
+                                    "packageName":  "requests",
+                                    "versionString":  "2.31.0",
+                                    "source":  "PYPI_RELEASE_FILENAME"
+                                },
+                                {
+                                    "packageName":  "requests",
+                                    "versionString":  "2.31.0",
+                                    "source":  "PYPI_METADATA_FILE"
+                                }
+                            ],
+    "cooldown":  {
+                     "end":  "2023-05-27T15:12:42Z",
+                     "description":  ""
+                 },
+    "projectStatus":  {
+                          "status":  "active",
+                          "reason":  ""
+                      },
+    "dependencies":  {
+                         "nodes":  [
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "requests",
+                                                              "version":  "2.31.0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "SELF",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "certifi",
+                                                              "version":  "2026.5.20"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "charset-normalizer",
+                                                              "version":  "3.4.7"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "idna",
+                                                              "version":  "3.16.0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       },
+                                       {
+                                           "versionKey":  {
+                                                              "system":  "PYPI",
+                                                              "name":  "urllib3",
+                                                              "version":  "2.7.0"
+                                                          },
+                                           "bundled":  false,
+                                           "relation":  "DIRECT",
+                                           "errors":  [
+
+                                                      ]
+                                       }
+                                   ],
+                         "edges":  [
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  1,
+                                           "requirement":  "\u003e=2017.4.17"
+                                       },
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  2,
+                                           "requirement":  "\u003c4,\u003e=2"
+                                       },
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  3,
+                                           "requirement":  "\u003c4,\u003e=2.5"
+                                       },
+                                       {
+                                           "fromNode":  0,
+                                           "toNode":  4,
+                                           "requirement":  "\u003c3,\u003e=1.21.1"
+                                       }
+                                   ],
+                         "error":  ""
+                     },
+    "ingested_at":  "2026-05-27T07:16:40.0510511Z"
+}
