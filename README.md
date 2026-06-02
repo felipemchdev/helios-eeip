@@ -1,4 +1,5 @@
-# ☀️ Helios EEIP — Enterprise Ecosystem Intelligence Platform
+# ☀️ Helios EEIP - Enterprise Ecosystem Intelligence Platform
+[Dashboard](https://eeip-dashboard.wonderfulbush-04a41aac.eastus.azurecontainerapps.io/) 
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://python.org)
 [![dbt](https://img.shields.io/badge/dbt-1.7-orange.svg)](https://docs.getdbt.com)
