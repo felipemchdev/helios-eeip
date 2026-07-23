@@ -5,10 +5,9 @@
 [![dbt](https://img.shields.io/badge/dbt-1.7-orange.svg)](https://docs.getdbt.com)
 [![DuckDB](https://img.shields.io/badge/DuckDB-embedded-yellow.svg)](https://duckdb.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-latest-red.svg)](https://streamlit.io)
-[![Azure](https://img.shields.io/badge/Azure-East%20US-0078D4.svg)](https://azure.microsoft.com)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](./LICENSE)
 
-Helios EEIP is a self-hosted, Azure-native **supply chain security intelligence platform** that ingests open-source package metadata from [deps.dev](https://deps.dev) (Google Open Source Insights), maps the complete transitive dependency graph, cross-references known CVEs, and surfaces actionable risk analytics through an interactive dashboard.
+Helios EEIP is a **supply chain security intelligence platform** that ingests open-source package metadata from [deps.dev](https://deps.dev) (Google Open Source Insights), analyzes dependency graphs for transitive vulnerabilities, and exposes critical risks through an interactive dashboard. Runs locally or in production environments.
 
 **What you can answer in under 10 seconds:**
 - Which packages in my portfolio have CRITICAL or HIGH CVEs in their dependency tree?
@@ -21,42 +20,40 @@ Helios EEIP is a self-hosted, Azure-native **supply chain security intelligence 
 ## Architecture Overview
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                          HELIOS EEIP                                  │
-├───────────────┬──────────────────────────────────────────────────────┤
-│  INGESTION    │  Azure Functions (Python v2)                          │
-│               │  Timer trigger every 3 days                           │
-│               │  → Pulls deps.dev API for 10+ high-impact packages   │
-│               │  → Writes raw JSON to ADLS Gen2 (Bronze)             │
-│               │  → Downloads Bronze to local temp storage            │
-│               │  → Runs dbt-duckdb: Bronze → Silver → Gold           │
-│               │  → Exports Gold tables as Parquet to ADLS            │
-├───────────────┼──────────────────────────────────────────────────────┤
-│  TRANSFORM    │  dbt 1.7 + DuckDB (embedded OLAP)                    │
-│               │  Medallion architecture: Bronze / Silver / Gold       │
-│               │  → stg_packages, stg_dependencies, stg_edges          │
-│               │  → stg_advisories, stg_dependency_advisories          │
-│               │  → dim_dependency_chain, dim_dependency_edges         │
-│               │  → fct_dependency_risk (risk score per package)      │
-├───────────────┼──────────────────────────────────────────────────────┤
-│  STORAGE      │  Azure Data Lake Storage Gen2                          │
-│               │  Container: bronze (raw JSON), gold (Parquet)        │
-│               │  Hierarchical namespace enabled                       │
-├───────────────┼──────────────────────────────────────────────────────┤
-│  DASHBOARD    │  Streamlit (Azure Container App, Consumption tier)    │
-│               │  → Reads Gold Parquet via pandas/pyarrow              │
-│               │  → Package impact cards with severity badges         │
-│               │  → CVE details, blast radius, dependency chains       │
-│               │  → Bubble chart risk radar                            │
-│               │  → Actionable recommendations per severity            │
-├───────────────┼──────────────────────────────────────────────────────┤
-│  SECURITY     │  Azure Key Vault, Managed Identity, RBAC             │
-│  MONITORING   │  Application Insights, Azure Monitor                  │
-│  REGISTRY     │  Azure Container Registry (eeipregistry)             │
-└───────────────┴──────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│                          HELIOS EEIP                            │
+├────────────────┬──────────────────────────────────────────────┤
+│  INGESTION     │  Timer trigger (local cron or cloud schedule) │
+│                │  → Pulls deps.dev API for 10+ high-impact    │
+│                │    packages                                   │
+│                │  → Writes raw JSON to Bronze layer           │
+│                │  → Runs dbt-duckdb: Bronze → Silver → Gold   │
+│                │  → Exports Gold tables as Parquet            │
+├────────────────┼──────────────────────────────────────────────┤
+│  TRANSFORM     │  dbt 1.7 + DuckDB (embedded OLAP)            │
+│                │  Medallion architecture: Bronze / Silver / Gold
+│                │  → stg_packages, stg_dependencies, stg_edges │
+│                │  → stg_advisories, stg_dependency_advisories │
+│                │  → dim_dependency_chain, dim_dependency_edges│
+│                │  → fct_dependency_risk (risk score per pkg)  │
+├────────────────┼──────────────────────────────────────────────┤
+│  STORAGE       │  Local filesystem (./data) or cloud blob      │
+│                │  Structure: bronze (raw JSON), gold (Parquet)│
+├────────────────┼──────────────────────────────────────────────┤
+│  DASHBOARD     │  Streamlit (local or containerized)          │
+│                │  → Reads Gold Parquet via pandas/pyarrow    │
+│                │  → Package impact cards with severity badges│
+│                │  → CVE details, blast radius, dep chains    │
+│                │  → Bubble chart risk radar                   │
+│                │  → Actionable recommendations per severity   │
+├────────────────┼──────────────────────────────────────────────┤
+│  SECURITY      │  Environment variables / secrets mgmt        │
+│  MONITORING    │  Application-level logging                   │
+│  REGISTRY      │  Docker container registry (optional)        │
+└────────────────┴──────────────────────────────────────────────┘
 ```
 
-**Cost:** Under R$6 (~$1 USD) per month. Entire stack runs on Azure Consumption tier with scale-to-zero. No VMs. No always-on compute.
+**Cost:** Minimal. Local execution has no external costs beyond internet for deps.dev API. Cloud deployments scale with usage.
 
 ---
 
@@ -65,16 +62,12 @@ Helios EEIP is a self-hosted, Azure-native **supply chain security intelligence 
 | Layer | Technology | Version |
 |---|---|---|
 | Language | Python | 3.11 |
-| Ingestion + Orchestration | Azure Functions (Python v2) | 1.18.0 |
+| Ingestion + Orchestration | APScheduler (local) or Functions/Cloud | varies |
 | Transformation | dbt + dbt-duckdb adapter | 1.7.4 |
 | Execution Engine | DuckDB | embedded |
 | Dashboard | Streamlit + pandas + PyArrow | latest |
-| Storage | Azure Data Lake Storage Gen2 | — |
-| Container Registry | Azure Container Registry | — |
-| Secrets | Azure Key Vault | — |
-| Auth | Managed Identity (system-assigned) | — |
-| Monitoring | Application Insights | — |
-| Container Runtime | Azure Container Apps (Consumption) | — |
+| Storage | Filesystem (local) or Cloud Blob Storage | — |
+| Secrets | Environment variables / Key Vault / Cloud Secrets | — |
 | External API | deps.dev v3alpha (Google) | — |
 | Ecosystems Tracked | PyPI, NPM, Maven | — |
 | SQL Dialect | DuckDB | — |
@@ -90,11 +83,11 @@ eeip/
 ├── .gitignore
 ├── .env.example
 │
-├── ingestion/                     # Azure Functions (Python v2)
+├── ingestion/                     # Ingestion script (local or cloud)
 │   ├── function_app.py            # Timer trigger + deps.dev scraper
 │   ├── requirements.txt
 │   ├── host.json
-│   └── transformation/            # embedded dbt project (deployed with Function)
+│   └── transformation/            # Embedded dbt project
 │       ├── dbt_project.yml
 │       ├── profiles.yml
 │       ├── packages.yml
@@ -105,11 +98,11 @@ eeip/
 │           └── gold/              # dim_dependency_chain, dim_dependency_edges,
 │                                  # fct_dependency_risk, schema.yml
 │
-├── orchestration/                 # Apache Airflow (legacy — pipeline now self-contained in Function)
-│   ├── Dockerfile
+├── orchestration/                 # Orchestration examples (local or cloud)
+│   ├── Dockerfile                 # Optional containerization
 │   ├── docker-compose.yml
 │   └── dags/
-│       └── eeip_pipeline.py       # Unused — ingestion runs dbt internally
+│       └── eeip_pipeline.py       # Example: Apache Airflow DAG
 │
 ├── transformation/                # dbt project (standalone copy)
 │   ├── dbt_project.yml
@@ -117,13 +110,13 @@ eeip/
 │   ├── packages.yml
 │   └── models/                    # Same structure as ingestion/transformation/
 │
-├── dashboard/                     # Streamlit
+├── dashboard/                     # Streamlit application
 │   ├── Dockerfile                 # python:3.11-slim
 │   ├── app.py                     # Full dashboard with HTML cards
 │   ├── requirements.txt           # streamlit, pandas, pyarrow, azure-storage-blob
 │   └── fonts/                     # CSS font files (deprecated)
 │
-└── airflow-config.yaml            # Exported Container App configuration
+└── config.yaml                    # Configuration template
 ```
 
 ---
@@ -132,9 +125,9 @@ eeip/
 
 | Layer | Description | Storage |
 |---|---|---|
-| **Bronze** | Raw JSON from deps.dev, partitioned by `YYYY-MM-DD/ecosystem_package.json` | ADLS: `bronze/raw/deps_dev/` |
+| **Bronze** | Raw JSON from deps.dev, partitioned by `YYYY-MM-DD/ecosystem_package.json` | `./data/bronze/` or cloud blob |
 | **Silver** | Deduplicated, normalized views — packages, dependencies, edges, advisories | DuckDB views |
-| **Gold** | Business-ready tables — dependency chains, dependency edges with CVE mapping, risk per root package | ADLS: `gold/{model}/*.parquet` |
+| **Gold** | Business-ready tables — dependency chains, dependency edges with CVE mapping, risk per root package | `./data/gold/` or cloud blob |
 
 ### dbt Models
 
@@ -193,30 +186,63 @@ The Streamlit dashboard provides a platform operations view of supply chain risk
 
 ### Prerequisites
 
-- Azure CLI 2.x with `az login`
-- Docker (for building Container App images)
-- Python 3.11 (for local development)
+- Python 3.11
+- pip or poetry for dependency management
+- Docker (optional, for containerized deployment)
 
-### Dashboard (most common deploy)
-
-```bash
-cd eeip/dashboard
-docker build -t eeipregistry.azurecr.io/dashboard:vXX .
-docker push eeipregistry.azurecr.io/dashboard:vXX
-az containerapp update \
-  --name eeip-dashboard \
-  --resource-group rg-eeip \
-  --image eeipregistry.azurecr.io/dashboard:vXX
-```
-
-### Ingestion + Transformation (Azure Functions)
+### Local Setup (Recommended for Development)
 
 ```bash
-cd eeip/ingestion
-func azure functionapp publish eeip-ingestion --python
+# 1. Clone and setup
+git clone https://github.com/felipemchdev/helios-eeip.git
+cd helios-eeip
+cp .env.example .env
+# Edit .env with your configuration
+
+# 2. Install dependencies
+pip install -r ingestion/requirements.txt
+pip install -r dashboard/requirements.txt
+
+# 3. Run ingestion locally
+cd ingestion
+python function_app.py
+
+# 4. Run transformations (dbt)
+cd ../transformation
+pip install dbt-duckdb
+dbt deps
+dbt run
+dbt test
+
+# 5. Launch dashboard
+cd ../dashboard
+streamlit run app.py
+# Dashboard opens at http://localhost:8501
 ```
 
-The Function handles everything end-to-end: pulls deps.dev API, downloads bronze from ADLS, runs dbt silver → gold with DuckDB, and exports gold Parquet back to ADLS. No separate orchestrator needed.
+### Docker / Containerized Deployment
+
+```bash
+# Build dashboard image
+cd dashboard
+docker build -t helios-dashboard:latest .
+docker run -p 8501:8501 --env-file ../.env helios-dashboard:latest
+
+# Build and run with docker-compose
+cd ..
+docker-compose up --build
+```
+
+### Cloud Deployment (Optional)
+
+For cloud deployments (Azure, AWS, GCP, etc.):
+1. Containerize the ingestion and dashboard components
+2. Configure storage backend (blob storage, S3, GCS, etc.)
+3. Set up cloud scheduler or equivalent for timer-triggered ingestion
+4. Configure secrets management service
+5. Deploy dashboard to container service of choice
+
+Refer to cloud provider documentation for specific setup.
 
 ---
 
@@ -226,7 +252,6 @@ The Function handles everything end-to-end: pulls deps.dev API, downloads bronze
 
 ```bash
 cp .env.example .env     # Edit with your values
-az login                 # Authenticate to Azure
 ```
 
 ### 2. Ingestion
@@ -234,6 +259,8 @@ az login                 # Authenticate to Azure
 ```bash
 cd ingestion
 pip install -r requirements.txt
+python function_app.py
+# Or trigger via HTTP POST if running locally
 curl -X POST http://localhost:7071/admin/functions/ingest_deps_dev
 ```
 
@@ -255,51 +282,52 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### 5. Airflow (legacy — optional)
+### 5. Orchestration (Optional)
 
 ```bash
 cd orchestration
 docker compose up --build -d
-# UI at http://localhost:8080
+# Airflow UI at http://localhost:8080
 ```
 
-> Airflow is no longer part of the active pipeline. The Function runs dbt
-> internally and exports gold Parquet to ADLS.
+> Note: Orchestration is optional. Ingestion can run standalone via
+> cron, APScheduler, or cloud timers.
 
 ---
 
 ## Auth & Security
 
-- **Production:** System-assigned Managed Identity for Function → ADLS and Container Apps → ACR. Secrets in Azure Key Vault.
-- **Current dashboard:** `ADLS_CONNECTION_STRING` via environment variable (migration to Managed Identity planned).
-- **Development:** `az login` + `DefaultAzureCredential()`. `.env` and `local.settings.json` are in `.gitignore`.
+- **Local:** Environment variables in `.env` (added to `.gitignore`)
+- **Production:** Use your cloud provider's secrets management service
+  - Azure: Key Vault
+  - AWS: Secrets Manager
+  - GCP: Secret Manager
+- **Development:** `.env` and `local.settings.json` are in `.gitignore`
 
 ---
 
 ## Cost Breakdown
 
-| Resource | Tier | Monthly Cost (est.) |
-|---|---|---|
-| Azure Functions | Consumption, timer + HTTP trigger | $0.00 (well within free grant) |
-| Container Apps (dashboard) | Consumption, 0.5 vCPU, 1 GB, scale-to-zero | ~$0.50 |
-| ADLS Gen2 | ~10 MB storage + ~20 writes/run | ~$0.05 |
-| Key Vault | Free tier | $0.00 |
-| Container Registry | Basic | ~$0.15 |
-| **Total** | | **~$1.00 / R$6.00** |
+| Scenario | Estimated Monthly Cost |
+|---|---|
+| **Local Development** | $0.00 (no external resources) |
+| **Local + Cloud Storage** | ~$0.10–$1.00 (storage only) |
+| **Cloud Hosted (Minimal)** | ~$1.00–$10.00 (varies by provider) |
+| **Cloud Hosted (Production)** | $10–$100+ (depends on scale) |
 
 ---
 
 ## Roadmap
 
 ### Phase 1 — Production Hardening
-- [ ] Managed Identity for all ADLS access (no connection strings)
-- [ ] Terraform/Bicep IaC for all resources
-- [ ] GitHub Actions CI/CD pipeline
-- [ ] Azure Monitor alert rules
+- [ ] Secrets management integration (all providers)
+- [ ] Infrastructure-as-code templates (Terraform, Docker, Helm)
+- [ ] CI/CD pipeline (GitHub Actions, GitLab CI, etc.)
+- [ ] Monitoring and alerting setup
 
 ### Phase 2 — Data Enrichment
 - [ ] OSV.dev API integration for full CVSS vectors and exploit availability
-- [ ] Weighted risk score: severity �- depth in dependency graph �- exploitability
+- [ ] Weighted risk score: severity × depth in dependency graph × exploitability
 - [ ] dbt incremental models for silver and gold layers
 - [ ] Historical snapshot tracking
 
